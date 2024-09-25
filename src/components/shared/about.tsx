@@ -34,13 +34,13 @@ export default function About() {
           className="text-lg text-zinc-400 mb-4"
           variants={itemVariants}
         >
-          I'm a passionate developer with a keen interest in creating elegant,
-          efficient solutions to complex problems. My journey in tech has led me
-          through various languages and frameworks, always with an eye towards
-          innovation and user-centric design.
+          I&apos;m a passionate developer with a keen interest in creating
+          elegant, efficient solutions to complex problems. My journey in tech
+          has led me through various languages and frameworks, always with an
+          eye towards innovation and user-centric design.
         </motion.p>
         <motion.p className="text-lg text-zinc-400" variants={itemVariants}>
-          When I'm not coding, you can find me exploring new technologies,
+          When I&apos;m not coding, you can find me exploring new technologies,
           contributing to open-source projects, or sharing my knowledge through
           tech blogs and community events.
         </motion.p>

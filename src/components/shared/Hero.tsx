@@ -1,13 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useAnimation,
-  AnimatePresence,
-} from "framer-motion";
+import { motion, useMotionValue, useSpring, useAnimation } from "framer-motion";
 
 const LoadingCursor = () => {
   const cursorX = useMotionValue(-100);
