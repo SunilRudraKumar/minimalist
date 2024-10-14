@@ -1,68 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, useMotionValue, useSpring, useAnimation } from "framer-motion";
-
-const LoadingCursor = () => {
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-
-  const springConfig = { damping: 25, stiffness: 700 };
-  const cursorXSpring = useSpring(cursorX, springConfig);
-  const cursorYSpring = useSpring(cursorY, springConfig);
-
-  const rotate = useAnimation();
-
-  useEffect(() => {
-    const moveCursor = (e: MouseEvent) => {
-      cursorX.set(e.clientX - 16);
-      cursorY.set(e.clientY - 16);
-    };
-    window.addEventListener("mousemove", moveCursor);
-
-    rotate.start({
-      rotate: 360,
-      transition: {
-        duration: 2,
-        repeat: Infinity,
-        ease: "linear",
-      },
-    });
-
-    return () => {
-      window.removeEventListener("mousemove", moveCursor);
-    };
-  }, []);
-
-  return (
-    <motion.div
-      className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-50"
-      style={{
-        x: cursorXSpring,
-        y: cursorYSpring,
-      }}
-    >
-      <motion.svg
-        width="32"
-        height="32"
-        viewBox="0 0 32 32"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        animate={rotate}
-      >
-        <circle
-          cx="16"
-          cy="16"
-          r="14"
-          stroke="white"
-          strokeWidth="4"
-          strokeLinecap="round"
-          strokeDasharray="80 30"
-        />
-      </motion.svg>
-    </motion.div>
-  );
-};
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa"; // Importing icons
 
 interface HeroProps {
   activeSection: string | null;
@@ -91,12 +31,20 @@ export default function HackerNav({
     visible: { opacity: 1, y: 0 },
   };
 
+  const pulseAnimation = {
+    scale: [1, 1.05, 1],
+    transition: {
+      duration: 2,
+      repeat: Infinity,
+      ease: "easeInOut",
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center cursor-none">
-      <LoadingCursor />
+    <div className="min-h-screen bg-black flex flex-col">
       <motion.nav
         className={`fixed w-full ${
-          activeSection ? "top-0" : "top-1/2 -translate-y-1/2"
+          activeSection ? "top-0 pt-4 pb-4" : "top-1/2 -translate-y-1/2"
         } z-50`}
         animate={activeSection ? { top: 0 } : { top: "50%", y: "-50%" }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -121,6 +69,7 @@ export default function HackerNav({
                 onHoverEnd={() => setHoveredItem(null)}
                 onClick={() => setActiveSection(item)}
                 whileHover={{ scale: 1.1, x: activeSection ? 0 : 10 }}
+                animate={activeSection === item ? pulseAnimation : {}}
                 transition={{ type: "spring", stiffness: 300, damping: 10 }}
               >
                 {item}

@@ -1,0 +1,17 @@
+{
+    "title": "Blog Posts",
+    "posts": [
+      {
+        "title": "The Future of AI in Web Development",
+        "date": "June 15, 2023"
+      },
+      {
+        "title": "Optimizing React Performance: Advanced Techniques",
+        "date": "May 22, 2023"
+      },
+      {
+        "title": "Building Scalable Microservices with Node.js",
+        "date": "April 10, 2023"
+      }
+    ]
+  }

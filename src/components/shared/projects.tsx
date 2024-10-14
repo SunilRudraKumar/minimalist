@@ -1,9 +1,28 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
+interface Project {
+  name: string;
+  tech: string;
+}
+
+interface ProjectsData {
+  title: string;
+  projects: Project[];
+}
+
 export default function Projects() {
+  const [projectsData, setProjectsData] = useState<ProjectsData | null>(null);
+
+  useEffect(() => {
+    fetch("/data/projects.json")
+      .then((response) => response.json())
+      .then((data) => setProjectsData(data))
+      .catch((error) => console.error("Error fetching projects data:", error));
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -19,11 +38,7 @@ export default function Projects() {
     visible: { opacity: 1, y: 0 },
   };
 
-  const projects = [
-    { name: "AI-Powered Chat Bot", tech: "React, Node.js, TensorFlow" },
-    { name: "E-commerce Platform", tech: "Next.js, GraphQL, MongoDB" },
-    { name: "Blockchain Wallet", tech: "Solidity, Web3.js, React Native" },
-  ];
+  if (!projectsData) return null;
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center text-white">
@@ -34,9 +49,9 @@ export default function Projects() {
         animate="visible"
       >
         <motion.h2 className="text-4xl font-bold mb-6" variants={itemVariants}>
-          Projects
+          {projectsData.title}
         </motion.h2>
-        {projects.map((project, index) => (
+        {projectsData.projects.map((project, index) => (
           <motion.div
             key={index}
             className="mb-6 p-4 border border-zinc-800 rounded-lg"

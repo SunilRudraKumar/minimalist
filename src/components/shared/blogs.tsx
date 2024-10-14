@@ -1,9 +1,28 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
+interface BlogPost {
+  title: string;
+  date: string;
+}
+
+interface BlogsData {
+  title: string;
+  posts: BlogPost[];
+}
+
 export default function Blogs() {
+  const [blogsData, setBlogsData] = useState<BlogsData | null>(null);
+
+  useEffect(() => {
+    fetch("/data/blogs.json")
+      .then((response) => response.json())
+      .then((data) => setBlogsData(data))
+      .catch((error) => console.error("Error fetching blogs data:", error));
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -19,17 +38,7 @@ export default function Blogs() {
     visible: { opacity: 1, y: 0 },
   };
 
-  const blogPosts = [
-    { title: "The Future of AI in Web Development", date: "June 15, 2023" },
-    {
-      title: "Optimizing React Performance: Advanced Techniques",
-      date: "May 22, 2023",
-    },
-    {
-      title: "Building Scalable Microservices with Node.js",
-      date: "April 10, 2023",
-    },
-  ];
+  if (!blogsData) return null;
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center text-white">
@@ -40,9 +49,9 @@ export default function Blogs() {
         animate="visible"
       >
         <motion.h2 className="text-4xl font-bold mb-6" variants={itemVariants}>
-          Blog Posts
+          {blogsData.title}
         </motion.h2>
-        {blogPosts.map((post, index) => (
+        {blogsData.posts.map((post, index) => (
           <motion.div
             key={index}
             className="mb-6"

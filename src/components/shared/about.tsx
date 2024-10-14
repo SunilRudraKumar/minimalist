@@ -1,9 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
+interface AboutData {
+  title: string;
+  paragraphs: string[];
+}
+
 export default function About() {
+  const [aboutData, setAboutData] = useState<AboutData | null>(null);
+
+  useEffect(() => {
+    fetch("/data/about.json")
+      .then((response) => response.json())
+      .then((data) => setAboutData(data))
+      .catch((error) => console.error("Error fetching about data:", error));
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -19,6 +33,8 @@ export default function About() {
     visible: { opacity: 1, y: 0 },
   };
 
+  if (!aboutData) return null;
+
   return (
     <div className="h-full flex items-center justify-center text-white">
       <motion.div
@@ -28,22 +44,17 @@ export default function About() {
         animate="visible"
       >
         <motion.h2 className="text-4xl font-bold mb-6" variants={itemVariants}>
-          About Me
+          {aboutData.title}
         </motion.h2>
-        <motion.p
-          className="text-lg text-zinc-400 mb-4"
-          variants={itemVariants}
-        >
-          I&apos;m a passionate developer with a keen interest in creating
-          elegant, efficient solutions to complex problems. My journey in tech
-          has led me through various languages and frameworks, always with an
-          eye towards innovation and user-centric design.
-        </motion.p>
-        <motion.p className="text-lg text-zinc-400" variants={itemVariants}>
-          When I&apos;m not coding, you can find me exploring new technologies,
-          contributing to open-source projects, or sharing my knowledge through
-          tech blogs and community events.
-        </motion.p>
+        {aboutData.paragraphs.map((paragraph, index) => (
+          <motion.p
+            key={index}
+            className="text-lg text-zinc-400 mb-4"
+            variants={itemVariants}
+          >
+            {paragraph}
+          </motion.p>
+        ))}
       </motion.div>
     </div>
   );
