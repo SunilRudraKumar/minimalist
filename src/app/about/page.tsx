@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import StickyHeader from "@/components/shared/header";
 
 interface AboutData {
   title: string;
@@ -36,23 +37,29 @@ export default function About() {
   if (!aboutData) return null;
 
   return (
-    <div className="h-full flex items-center justify-center text-white">
-      <motion.div
-        className="max-w-2xl mx-auto p-8"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {aboutData.paragraphs.map((paragraph, index) => (
-          <motion.p
-            key={index}
-            className="text-lg text-zinc-400 mb-4"
-            variants={itemVariants}
+    <>
+      <div className="relative">
+        <StickyHeader />
+
+        <div className=" flex items-center justify-center bg-black text-white">
+          <motion.div
+            className="max-w-2xl mx-auto p-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
-            {paragraph}
-          </motion.p>
-        ))}
-      </motion.div>
-    </div>
+            {aboutData.paragraphs.map((paragraph, index) => (
+              <motion.p
+                key={index}
+                className="text-lg text-zinc-400 mb-4"
+                variants={itemVariants}
+              >
+                {paragraph}
+              </motion.p>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </>
   );
 }

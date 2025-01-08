@@ -1,93 +1,80 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { FaGithub, FaTwitter, FaLinkedin } from "react-icons/fa"; // Importing icons
 
-interface HeroProps {
-  activeSection: string | null;
-  setActiveSection: (section: string | null) => void;
+function shuffleString(str: string): string {
+  const arr = str.split("");
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr.join("");
 }
 
-export default function HackerNav({
-  activeSection,
-  setActiveSection,
-}: HeroProps) {
+const navItems = [
+  { label: "About", link: "/about" },
+  { label: "Work", link: "/work" },
+  { label: "Projects", link: "/projects" },
+  { label: "Blogs", link: "/blogs" },
+  { label: "Contact", link: "/contact" },
+];
+
+export default function SimpleNav() {
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
-  const navItems = ["About", "Work", "Projects", "Blogs", "Contact"];
+  const [displayText, setDisplayText] = useState<Record<string, string>>({});
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
+  function handleHoverStart(label: string) {
+    setHoveredItem(label);
+    setDisplayText((prev) => ({
+      ...prev,
+      [label]: shuffleString(label),
+    }));
+  }
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-
-  const pulseAnimation = {
-    scale: [1, 1.05, 1],
-    transition: {
-      duration: 2,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  };
+  function handleHoverEnd(label: string) {
+    setHoveredItem(null);
+    setDisplayText((prev) => ({
+      ...prev,
+      [label]: label,
+    }));
+  }
 
   return (
-    <div className="min-h-screen bg-black flex flex-col">
-      <motion.nav
-        className={`fixed w-full ${
-          activeSection ? "top-0 pt-4 pb-4" : "top-1/2 -translate-y-1/2"
-        } z-50`}
-        animate={activeSection ? { top: 0 } : { top: "50%", y: "-50%" }}
-        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-      >
-        <motion.ul
-          className={`flex ${
-            activeSection
-              ? "flex-row justify-center items-center"
-              : "flex-col items-center"
-          } gap-6`}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {navItems.map((item) => (
-            <motion.li key={item} className="relative" variants={itemVariants}>
-              <motion.button
-                className={`text-4xl font-bold ${
-                  activeSection === item ? "text-white" : "text-zinc-500"
-                } hover:text-white transition-all duration-300 ease-in-out`}
-                onHoverStart={() => setHoveredItem(item)}
-                onHoverEnd={() => setHoveredItem(null)}
-                onClick={() => setActiveSection(item)}
-                whileHover={{ scale: 1.1, x: activeSection ? 0 : 10 }}
-                animate={activeSection === item ? pulseAnimation : {}}
-                transition={{ type: "spring", stiffness: 300, damping: 10 }}
-              >
-                {item}
-              </motion.button>
-              {hoveredItem === item && !activeSection && (
+    <div className="min-h-screen bg-black flex items-center  justify-center">
+      <nav>
+        {/* 
+          flex-col: Stacks items vertically
+          items-center: Centers them horizontally
+          space-y-8: Adds vertical spacing between items
+        */}
+        <ul className="flex flex-col items-center  animate-pulse space-y-8">
+          {navItems.map(({ label, link }) => (
+            <li key={label} className="relative">
+              <Link href={link}>
+                <motion.span
+                  className="text-white text-2xl font-bold cursor-pointer"
+                  onHoverStart={() => handleHoverStart(label)}
+                  onHoverEnd={() => handleHoverEnd(label)}
+                >
+                  {displayText[label] || label}
+                </motion.span>
+              </Link>
+
+              {hoveredItem === label && (
                 <motion.div
                   className="absolute bottom-0 left-0 h-0.5 bg-white"
+                  layoutId="underline"
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  layoutId="underline"
-                  style={{ maxWidth: `${item.length * 1.8}ch` }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
                 />
               )}
-            </motion.li>
+            </li>
           ))}
-        </motion.ul>
-      </motion.nav>
+        </ul>
+      </nav>
     </div>
   );
 }
